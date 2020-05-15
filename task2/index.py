@@ -41,7 +41,7 @@ def public():
 @check_for_token
 def authorised():
    content = {'You are at the home page': 'coming soon.....',
-             'Copyright': '2018 to 2021'} 
+             'Copyright': '©2018 to 2021'} 
    return jsonify({'message': 'Success'},content), 200
 
 @app.route('/login', methods=['POST'])
