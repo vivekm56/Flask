@@ -40,7 +40,8 @@ def public():
 @app.route('/auth')
 @check_for_token
 def authorised():
-   return 'This is only viewable with a token'
+   content = {'You are at the home page': 'coming soon.....'} 
+   return jsonify({'message': 'Success'},content), 200
 
 @app.route('/login', methods=['POST'])
 def login():
