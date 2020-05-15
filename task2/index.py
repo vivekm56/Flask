@@ -44,7 +44,7 @@ def authorised():
 
 @app.route('/login', methods=['POST'])
 def login():
-    if request.form['username'] == 'admin' or request.form['password'] == 'password':
+    if request.form['username'] == 'admin' and request.form['password'] == 'password':
         session['logged_in'] = True
         token = jwt.encode({
             'user': request.form['username'],
