@@ -45,7 +45,7 @@ def login():
         return make_response('Unable to verify', 403, {'WWW-Authenticate': 'Basic realm: "login required"'})
 
 
-@app.route('/user-details')
+@app.route('/user_details')
 @check_for_token
 def authorised():
     content = {'You are at the home page': 'coming soon.....',
