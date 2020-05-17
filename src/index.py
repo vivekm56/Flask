@@ -30,14 +30,6 @@ def index():
    return "It is working"
 
 
-@app.route('/auth')
-@check_for_token
-def authorised():
-    content = {'You are at the home page': 'coming soon.....',
-        'Copyright': '©2018 to 2021'} 
-    return jsonify({'message': 'Success'},content), 200
-
-
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -53,6 +45,15 @@ def login():
         return make_response('Unable to verify', 403, {'WWW-Authenticate': 'Basic realm: "login required"'})
 
 
+@app.route('/user-details')
+@check_for_token
+def authorised():
+    content = {'You are at the home page': 'coming soon.....',
+        'Copyright': '©2018 to 2021'} 
+    return jsonify({'message': 'Success'},content), 200
+    
+    
+    
 
 
 
