@@ -1,11 +1,15 @@
 from flask import Flask, jsonify, request, make_response
 from functools import wraps
+from pymongo import MongoClient
 import datetime, jwt
 
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisisthesecretkey'
+client = MongoClient("mongodb://127.0.0.1:27017") #host uri
+db = client.myMongodb #select the database
+user_collection = db.users #select the collection name
 
 
 def check_for_token(func):
@@ -33,8 +37,14 @@ def index():
 
 @app.route('/login', methods=['POST'])
 def login():
-    if request.form['username'] == 'admin' and request.form['password'] == 'password':
-        
+    if request.form["username"] == "" or request.form["password"] == "":
+        return jsonify({"error": "Please provider username and password"})
+    login_user = user_collection.find({'name' : request.form['username']})
+
+    if (login_user.count() == 0):
+        return jsonify({'error': 'no username exist '})
+
+    if request.form['password'] ==  login_user[0]['password']:
         token = jwt.encode({
             'user': request.form['username'],
             'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=60)
