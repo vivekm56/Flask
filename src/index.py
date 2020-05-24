@@ -35,6 +35,32 @@ def index():
 
 
 
+@app.route('/register', methods=['POST'])
+def register():
+    if request.form["username"] == "" or request.form["password"] == "" or request.form['email_id'] == "" or request.form['address'] == "" :
+        return jsonify({"error": "Please provider username and password"})
+
+    user = user_collection.find({'name' : request.form['username']})
+    mail = user_collection.find({'email_id' : request.form['email_id']})
+
+    if (user.count() != 0):
+        return jsonify({'error': 'username already exist '})
+    
+    elif (mail.count() != 0):
+        return jsonify({'error': 'email already exist '})
+# """To add an item to the database. its a post request and we use databasename.insert()"""
+
+    user_collection.insert({
+       'name':request.form['username'],
+       'password':request.form['password'],
+       'email_id':request.form['email_id'],
+       'address':request.form['address']
+   }) 
+    return "you are registered successfully"
+   
+
+
+
 @app.route('/login', methods=['POST'])
 def login():
     if request.form["username"] == "" or request.form["password"] == "":
