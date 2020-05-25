@@ -38,7 +38,7 @@ def index():
 @app.route('/register', methods=['POST'])
 def register():
     if request.form["username"] == "" or request.form["password"] == "" or request.form['email_id'] == "" or request.form['address'] == "" :
-        return jsonify({"error": "Please provider username and password"})
+        return jsonify({"error": "Please fill all fields"})
 
     user = user_collection.find({'name' : request.form['username']})
     mail = user_collection.find({'email_id' : request.form['email_id']})
@@ -64,7 +64,7 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
     if request.form["username"] == "" or request.form["password"] == "":
-        return jsonify({"error": "Please provider username and password"})
+        return jsonify({"error": "Please provide username and password"})
     login_user = user_collection.find({'name' : request.form['username']})
 
     if (login_user.count() == 0):
