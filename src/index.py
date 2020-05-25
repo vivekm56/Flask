@@ -11,7 +11,7 @@ client = MongoClient("mongodb://127.0.0.1:27017") #host uri
 db = client.myMongodb #select the database
 user_collection = db.users #select the collection name
 
-
+# function for token verification
 def check_for_token(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
@@ -34,7 +34,7 @@ def index():
    return "It is working"
 
 
-
+# user register
 @app.route('/register', methods=['POST'])
 def register():
     if request.form["username"] == "" or request.form["password"] == "" or request.form['email_id'] == "" or request.form['address'] == "" :
@@ -60,7 +60,7 @@ def register():
    
 
 
-
+# user login
 @app.route('/login', methods=['POST'])
 def login():
     if request.form["username"] == "" or request.form["password"] == "":
@@ -80,7 +80,7 @@ def login():
     else:
         return make_response('Unable to verify', 403, {'WWW-Authenticate': 'Basic realm: "login required"'})
 
-
+# user details
 @app.route('/user_details')
 @check_for_token
 def authorised():
@@ -88,7 +88,25 @@ def authorised():
         'Copyright': '©2018 to 2021'} 
     return jsonify({'message': 'Success'},content), 200
     
+# forget_password
+@app.route('/forget_password', methods = ['POST'])
+def forget_password():
+    mail = user_collection.find({'email_id' : request.form['email_id']})
+    if request.form['email_id'] == '':
+        return jsonify({'error': 'please enter your registered email id'})
+
+    if (mail.count() == 0):
+        return jsonify({'error': 'this email id does not exist '})
     
+    elif (mail.count() != 0):
+
+        token = jwt.encode({
+            'user': request.form['email_id'],
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
+        },
+        app.config['SECRET_KEY'])
+        return jsonify({'success': 'a link has been sent to your email id, check your email and click on that link to create a new password'},{'token': token.decode('utf-8')})
+    return 'your password has been changed'
     
 
 
