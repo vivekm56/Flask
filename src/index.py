@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request, make_response
 from functools import wraps
 from pymongo import MongoClient
-import datetime, jwt
+from email.message import EmailMessage
+
+import datetime, jwt, smtplib, imghdr, os
 
 
 
@@ -24,6 +26,32 @@ def check_for_token(func):
             return jsonify({'message': 'Invalid token'}), 403
         return func(*args, **kwargs)
     return wrapped
+
+
+
+# email functionality added here
+EMAIL_ADDRESS = os.environ.get('EMAIL_USER')
+EMAIL_PASSWORD = os.environ.get('EMAIL_PASS')
+
+contacts = ['tahiley542@aprimail.com', 'xorogan715@ximtyl.com']
+
+msg = EmailMessage()
+msg['Subject'] = 'New Password'
+msg['From'] = EMAIL_ADDRESS
+msg['To'] = 'bibiy60021@etoymail.com','xorogan715@ximtyl.com'
+
+msg.set_content('This is a plain text email')
+
+msg.add_alternative("""\
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1 style="color:SlateGray;"><a href="http://www.google.com">click here</a></h1>
+    </body>
+</html>
+""", subtype='html')
+
+
 
 
 
@@ -105,6 +133,12 @@ def forget_password():
             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
         },
         app.config['SECRET_KEY'])
+        mail_body_content = jsonify({'token': token.decode('utf-8')})
+        
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            smtp.send_message(msg)
+        
         return jsonify({'success': 'a link has been sent to your email id, check your email and click on that link to create a new password'},{'token': token.decode('utf-8')})
     return 'your password has been changed'
     
