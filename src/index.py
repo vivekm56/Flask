@@ -36,7 +36,7 @@ EMAIL_PASSWORD = os.environ.get('EMAIL_PASS')
 contacts = ['tahiley542@aprimail.com', 'xorogan715@ximtyl.com']
 
 msg = EmailMessage()
-msg['Subject'] = 'New Password'
+msg['Subject'] = 'Forgot Password'
 msg['From'] = EMAIL_ADDRESS
 msg['To'] = 'bibiy60021@etoymail.com','xorogan715@ximtyl.com'
 
@@ -45,9 +45,11 @@ msg.set_content('This is a plain text email')
 msg.add_alternative("""\
 <!DOCTYPE html>
 <html>
-    <body>
-        <h1 style="color:SlateGray;"><a href="http://www.google.com">click here</a></h1>
-    </body>
+    <p>Hello {{username}},</p>
+                      <p>You or someone else has requested that a new password be generated for your account. If you made this request, then please click this link: <a href={{link}}><strong>reset password</strong></a>. If you did not make this request, then you can simply ignore this email.</p>
+                      <p>Best,</p>
+                      <p>Harrison</p>
+                      <p>Harrison@pythonprogramming.net</p>
 </html>
 """, subtype='html')
 
