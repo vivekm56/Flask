@@ -1,5 +1,7 @@
-from app import app
+from app import app, db
 from flask import render_template, request, json, Response
+from app.models import User, Course, Enrollment
+from app.forms import LoginForm, RegisterForm
 
 
 courseData = [{"courseID":"1111", "title":"PHP 111", "description":"Intro to PHP", "credits":"3", "term":"Fall, Summer"}, 
@@ -16,9 +18,10 @@ courseData = [{"courseID":"1111", "title":"PHP 111", "description":"Intro to PHP
 def index():
     return render_template("index.html", index=True)
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template("login.html", login=True)
+    form = LoginForm()
+    return render_template("login.html", title="Login", form=form, login=True)
 
 @app.route('/courses/')
 @app.route('/courses/<term>')
@@ -44,3 +47,16 @@ def api(idx=None):
     else:
         jdata = courseData[int(idx)]
     return Response(json.dumps(jdata), mimetype="api/json")
+
+
+
+
+@app.route('/user')
+def user():
+    # User(user_id=1, first_name="Christian", last_name="Hur", email="christian@uta.com",
+    # password="abc1234").save()
+    # User(user_id=2, first_name="Mary", last_name="Jane", email="mary.jane@uta.com",
+    # password="password123").save()
+    users = User.objects.all()
+    return render_template("user.html", users=users )
+   
